@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#
+# audio-playback - Play the most recent recording made by audio-record
+#
+# Usage: audio-playback
+#
+# Part of Bash Audio Tools by JaiGuyIsland
+# https://github.com/JaiGuyIsland/Bash-Audio-Tools
+
+set -euo pipefail
+
+# ---------- Configuration ----------
+RECORDINGS_DIR="${HOME}/.local/share/bash-audio-tools"
+INPUT_FILE="${RECORDINGS_DIR}/recording.wav"
+
+# ---------- Helpers ----------
+die() {
+    echo "Error: $*" >&2
+    exit 1
+}
+
+# ---------- Checks ----------
+if [[ ! -f "$INPUT_FILE" ]]; then
+    die "No recording found at $INPUT_FILE. Run 'audio-record <seconds>' first."
+fi
+
+# ---------- Dependency check ----------
+PLAYER=""
+if command -v aplay >/dev/null 2>&1; then
+    PLAYER="aplay"
+elif command -v paplay >/dev/null 2>&1; then
+    PLAYER="paplay"
+elif command -v play >/dev/null 2>&1; then
+    PLAYER="play"
+elif command -v ffplay >/dev/null 2>&1; then
+    PLAYER="ffplay"
+else
+    die "No audio player found. Install 'alsa-utils' (aplay), 'pulseaudio-utils' (paplay), 'sox' (play), or 'ffmpeg' (ffplay)."
+fi
+
+# ---------- Play ----------
+echo "▶️  Playing: $INPUT_FILE"
+
+case "$PLAYER" in
+    aplay)  aplay -q "$INPUT_FILE" ;;
+    paplay) paplay "$INPUT_FILE" ;;
+    play)   play -q "$INPUT_FILE" ;;
+    ffplay) ffplay -nodisp -autoexit -loglevel quiet "$INPUT_FILE" ;;
+esac
+
+echo "✅ Playback finished."
