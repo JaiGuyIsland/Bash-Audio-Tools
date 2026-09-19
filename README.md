@@ -27,13 +27,14 @@ You need a recorder and a player. The scripts pick whichever is available:
 
     git clone https://github.com/JaiGuyIsland/Bash-Audio-Tools.git
     cd Bash-Audio-Tools
-    chmod +x audio-record audio-playback
+    ./install.sh
 
-Optionally symlink them into your `PATH`:
+The installer will:
 
-    mkdir -p ~/.local/bin
-    ln -sf "$(pwd)/audio-record"   ~/.local/bin/audio-record
-    ln -sf "$(pwd)/audio-playback" ~/.local/bin/audio-playback
+- Make the scripts executable
+- Symlink them into `~/.local/bin`
+- Warn you if `~/.local/bin` isn't in your `PATH`
+- Check for a recorder and player
 
 ---
 
