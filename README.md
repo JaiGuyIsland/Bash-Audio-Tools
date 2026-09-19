@@ -22,20 +22,17 @@ You need a recorder and a player. The scripts pick whichever is available:
 - **Players:** `aplay` (alsa-utils), `paplay`, `play` (sox), `ffplay`
 
 ---
-
 ## 🚀 Install
 
     git clone https://github.com/JaiGuyIsland/Bash-Audio-Tools.git
     cd Bash-Audio-Tools
     ./install.sh
 
-The installer will:
+The installer symlinks the scripts into `~/.local/bin`. If that directory
+isn't in your `PATH`, it will tell you the exact command to run for your
+shell (bash, zsh, or fish). **Restart your terminal after that**, then try:
 
-- Make the scripts executable
-- Symlink them into `~/.local/bin`
-- Warn you if `~/.local/bin` isn't in your `PATH`
-- Check for a recorder and player
-
+    audio-record 5
 ---
 
 ## 🎤 Usage
