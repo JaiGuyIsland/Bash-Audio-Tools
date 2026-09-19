@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+#
+# audio-record - Record audio from the default microphone for N seconds
+#
+# Usage: audio-record <seconds>
+# Example: audio-record 5    (records for 5 seconds)
+#
+# Part of Bash Audio Tools by JaiGuyIsland
+# https://github.com/JaiGuyIsland/Bash-Audio-Tools
+
+set -euo pipefail
+
+# ---------- Configuration ----------
+RECORDINGS_DIR="${HOME}/.local/share/bash-audio-tools"
+OUTPUT_FILE="${RECORDINGS_DIR}/recording.wav"
+SAMPLE_RATE=44100
+CHANNELS=2
+
+# ---------- Helpers ----------
+usage() {
+    echo "Usage: $(basename "$0") <seconds>"
+    echo "  seconds : duration to record (positive integer)"
+    echo "Example: $(basename "$0") 5"
+    exit 1
+}
+
+die() {
+    echo "Error: $*" >&2
+    exit 1
+}
+
+# ---------- Arguments ----------
+if [[ $# -ne 1 ]]; then
+    usage
+fi
+
+DURATION="$1"
+
+# Validate: must be a positive integer
+if ! [[ "$DURATION" =~ ^[0-9]+$ ]] || [[ "$DURATION" -lt 1 ]]; then
+    die "Duration must be a positive integer (got: '$DURATION')"
+fi
+
+# ---------- Dependency check ----------
+# Prefer 'arecord' (ALSA) or fall back to 'sox'
+RECORDER=""
+if command -v arecord >/dev/null 2>&1; then
+    RECORDER="arecord"
+elif command -v sox >/dev/null 2>&1; then
+    RECORDER="sox"
+else
+    die "No recorder found. Install 'alsa-utils' (arecord) or 'sox'."
+fi
+
+# ---------- Setup ----------
+mkdir -p "$RECORDINGS_DIR"
+
+# ---------- Record ----------
+echo "🎙️  Recording for ${DURATION} second(s)..."
+
+case "$RECORDER" in
+    arecord)
+        arecord -f cd -r "$SAMPLE_RATE" -c "$CHANNELS" -d "$DURATION" "$OUTPUT_FILE"
+        ;;
+    sox)
+        sox -d -r "$SAMPLE_RATE" -c "$CHANNELS" "$OUTPUT_FILE" trim 0 "$DURATION"
+        ;;
+esac
+
+echo "✅ Saved to: $OUTPUT_FILE"
+
+# ---------- Playback ----------
+# Hand off to the playback script if available
+PLAYBACK_SCRIPT="$(dirname "$(readlink -f "$0")")/audio-playback"
+
+if [[ -x "$PLAYBACK_SCRIPT" ]]; then
+    echo "▶️  Playing back via audio-playback..."
+    "$PLAYBACK_SCRIPT"
+else
+    echo "⚠️  audio-playback not found next to this script; skipping playback."
+fi
