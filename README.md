@@ -1,43 +1,60 @@
-🎧 Bash Audio Tools
+# 🎧 Bash Audio Tools
+
 Simple Bash scripts for recording and playing back audio from the command line.
 
-Created by @JaiGuyIsland.
+Created by [@JaiGuyIsland](https://github.com/JaiGuyIsland).
 
-Scripts
-audio-record <seconds> — Records the microphone for the given number of seconds, then plays it back.
+---
 
-audio-playback — Replays the most recent recording.
+## ✨ Features
 
-Requirements
-You need a recorder and a player installed. The scripts auto-detect whichever is available.
+- **`audio-record <seconds>`** — Records the microphone for the given number of seconds, then plays it back.
+- **`audio-playback`** — Replays the most recent recording.
+- Auto-detects whatever recorder/player you already have installed.
 
-Recorders: arecord (alsa-utils), sox
+---
 
-Players: aplay (alsa-utils), paplay, play (sox), ffplay
+## 📦 Requirements
 
-Install
-bash
-git clone https://github.com/JaiGuyIsland/Bash-Audio-Tools.git
-cd Bash-Audio-Tools
-chmod +x audio-record audio-playback
-Optionally symlink them into your PATH:
+You need a recorder and a player. The scripts pick whichever is available:
 
-bash
-mkdir -p ~/.local/bin
-ln -sf "$(pwd)/audio-record"   ~/.local/bin/audio-record
-ln -sf "$(pwd)/audio-playback" ~/.local/bin/audio-playback
-Usage
+- **Recorders:** `arecord` (alsa-utils), `sox`
+- **Players:** `aplay` (alsa-utils), `paplay`, `play` (sox), `ffplay`
+
+---
+
+## 🚀 Install
+
+    git clone https://github.com/JaiGuyIsland/Bash-Audio-Tools.git
+    cd Bash-Audio-Tools
+    chmod +x audio-record audio-playback
+
+Optionally symlink them into your `PATH`:
+
+    mkdir -p ~/.local/bin
+    ln -sf "$(pwd)/audio-record"   ~/.local/bin/audio-record
+    ln -sf "$(pwd)/audio-playback" ~/.local/bin/audio-playback
+
+---
+
+## 🎤 Usage
+
 Record 5 seconds:
 
-bash
-audio-record 5
+    audio-record 5
+
 Replay the last recording:
 
-bash
-audio-playback
-Storage
-Recordings are saved to ~/.local/share/bash-audio-tools/recording.wav. Each new recording overwrites the previous one.
+    audio-playback
 
-License
-MIT — see LICENSE.
+---
 
+## 📂 Storage
+
+Recordings are saved to `~/.local/share/bash-audio-tools/recording.wav`. Each new recording overwrites the previous one.
+
+---
+
+## 📝 License
+
+MIT — see [LICENSE](LICENSE).
