@@ -1,6 +1,6 @@
 # 🎧 Bash Audio Tools
 
-Simple Bash scripts for recording and playing back audio from the command line.
+Simple Bash scripts for recording, playing back, and managing audio from the command line.
 
 Created by [@JaiGuyIsland](https://github.com/JaiGuyIsland).
 
@@ -8,8 +8,9 @@ Created by [@JaiGuyIsland](https://github.com/JaiGuyIsland).
 
 ## ✨ Features
 
-- **`audio-record <seconds>`** — Records the microphone for the given number of seconds, then plays it back.
-- **`audio-playback`** — Replays the most recent recording.
+- **`audio-record <seconds>`** — Records the microphone for the given number of seconds, then plays it back. Saves a unique timestamped file.
+- **`audio-playback`** — Replays your most recent recording.
+- **`audio-list`** — Opens an interactive menu to view, replay, or delete your saved recordings.
 - Auto-detects whatever recorder/player you already have installed.
 
 ---
@@ -22,17 +23,20 @@ You need a recorder and a player. The scripts pick whichever is available:
 - **Players:** `aplay` (alsa-utils), `paplay`, `play` (sox), `ffplay`
 
 ---
+
 ## 🚀 Install
 
     git clone https://github.com/JaiGuyIsland/Bash-Audio-Tools.git
     cd Bash-Audio-Tools
     ./install.sh
 
-The installer symlinks the scripts into `~/.local/bin`. If that directory
-isn't in your `PATH`, it will tell you the exact command to run for your
-shell (bash, zsh, or fish). **Restart your terminal after that**, then try:
+The installer will:
 
-    audio-record 5
+- Make the scripts executable
+- Symlink them into `~/.local/bin`
+- Warn you if `~/.local/bin` isn't in your `PATH`
+- Check for a recorder and player
+
 ---
 
 ## 🎤 Usage
@@ -45,11 +49,15 @@ Replay the last recording:
 
     audio-playback
 
+Manage all your recordings:
+
+    audio-list
+
 ---
 
 ## 📂 Storage
 
-Recordings are saved to `~/.local/share/bash-audio-tools/recording.wav`. Each new recording overwrites the previous one.
+Recordings are saved to `~/.local/share/bash-audio-tools/` as timestamped `.wav` files (e.g., `recording_20260921_153000.wav`). You can easily clear out old files using the `audio-list` command.
 
 ---
 
