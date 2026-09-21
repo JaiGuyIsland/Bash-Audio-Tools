@@ -11,7 +11,7 @@ set -euo pipefail
 
 # ---------- Configuration ----------
 RECORDINGS_DIR="${HOME}/.local/share/bash-audio-tools"
-INPUT_FILE="${RECORDINGS_DIR}/recording.wav"
+INPUT_FILE="$(ls -1t "${RECORDINGS_DIR}"/*.wav 2>/dev/null | head -n 1 || true)"
 
 # ---------- Helpers ----------
 die() {
@@ -20,8 +20,8 @@ die() {
 }
 
 # ---------- Checks ----------
-if [[ ! -f "$INPUT_FILE" ]]; then
-    die "No recording found at $INPUT_FILE. Run 'audio-record <seconds>' first."
+if [[ -z "$INPUT_FILE" ]] || [[ ! -f "$INPUT_FILE" ]]; then
+    die "No recordings found in $RECORDINGS_DIR. Run 'audio-record <seconds>' first."
 fi
 
 # ---------- Dependency check ----------
