@@ -12,7 +12,7 @@ set -euo pipefail
 
 # ---------- Configuration ----------
 RECORDINGS_DIR="${HOME}/.local/share/bash-audio-tools"
-OUTPUT_FILE="${RECORDINGS_DIR}/recording.wav"
+OUTPUT_FILE="${RECORDINGS_DIR}/recording_$(date +%Y%m%d_%H%M%S).wav"
 SAMPLE_RATE=44100
 CHANNELS=2
 
