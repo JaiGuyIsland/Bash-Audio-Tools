@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+#
+# audio-list - List, play, and delete recorded audios
+#
+# Usage: audio-list
+#
+# Part of Bash Audio Tools by JaiGuyIsland
+# https://github.com/JaiGuyIsland/Bash-Audio-Tools
+
+set -euo pipefail
+
+RECORDINGS_DIR="${HOME}/.local/share/bash-audio-tools"
+
+# ---------- Helpers ----------
+play_audio() {
+    local file="$1"
+    local PLAYER=""
+    if command -v aplay >/dev/null 2>&1; then PLAYER="aplay -q"
+    elif command -v paplay >/dev/null 2>&1; then PLAYER="paplay"
+    elif command -v play >/dev/null 2>&1; then PLAYER="play -q"
+    elif command -v ffplay >/dev/null 2>&1; then PLAYER="ffplay -nodisp -autoexit -loglevel quiet"
+    else 
+        echo "No audio player found."
+        return
+    fi
+    echo "▶️  Playing..."
+    $PLAYER "$file"
+}
+
+# ---------- Main Loop ----------
+if [[ ! -d "$RECORDINGS_DIR" ]]; then
+    echo "No recordings directory found. Run 'audio-record' first."
+    exit 0
+fi
+
+while true; do
+    echo "=============================="
+    echo "      📼 Your Recordings      "
+    echo "=============================="
+    
+    # Get all wav files sorted by newest first
+    mapfile -t files < <(ls -1t "$RECORDINGS_DIR"/*.wav 2>/dev/null || true)
+    
+    if [[ ${#files[@]} -eq 0 ]]; then
+        echo "No recordings found in $RECORDINGS_DIR."
+        exit 0
+    fi
+
+    # Print the list
+    for i in "${!files[@]}"; do
+        filename=$(basename "${files[$i]}")
+        echo "[$i] $filename"
+    done
+    echo "[q] Quit"
+    echo "------------------------------"
+
+    read -r -p "Select a file number (or 'q' to quit): " choice
+
+    if [[ "$choice" == "q" ]]; then
+        echo "Goodbye!"
+        break
+    fi
+
+    # Validate choice
+    if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 0 ] && [ "$choice" -lt "${#files[@]}" ]; then
+        selected_file="${files[$choice]}"
+        
+        while true; do
+            read -r -p "Selected $(basename "$selected_file") - [p]lay, [d]elete, [c]ancel: " action
+            case "$action" in
+                p) play_audio "$selected_file" ;;
+                d) 
+                    rm "$selected_file"
+                    echo "🗑️  Deleted!"
+                    break
+                    ;;
+                c) break ;;
+                *) echo "Invalid option." ;;
+            esac
+        done
+    else
+        echo "Invalid selection. Please type a number from the list."
+    fi
+    echo ""
+done
